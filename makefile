@@ -4,8 +4,8 @@ main: main.o
 	ld main.o -o main
 main.o: main.s
 	nasm -f elf64 main.s -o main.o
-main.s: main.py test.sic
-	python3 main.py test.sic
+main.s: main.py main.sic
+	python3 main.py main.sic
 
 
 clean:
