@@ -97,9 +97,6 @@ def process_sic_file(file_path):
                 i+=1
     except Exception as e:
         print(f"Error: {e}")
-    print(code_tokens)
-    print(data_tokens)
-    print(bss_tokens)
     parser()
 if __name__ == "__main__":
     if len(sys.argv) > 1:
