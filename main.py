@@ -1,6 +1,6 @@
 import os
 import sys
-
+from code_token_parser import code_parser
 found_start=0
 found_end=0
 variable_type={}
@@ -26,7 +26,7 @@ def lexer(line, j):
             print(f"Unknown instruction at line {j}: {words}")
             sys.exit(22)
 
-    # Case: Label + Instruction/Directive (e.g., "BUFF BYTE 5")
+
     elif len(words) == 3:
         mnemonic = words[1]
         if mnemonic in classA_instructs:
@@ -64,9 +64,15 @@ def parser():
         f.write("section .text\nglobal _start\n_start:\n")
 
         for instruction in code_tokens:
-            if instruction[0] == "LDA":
+            if instruction[0] not in classA_instructs:
+                f.write(f"{instruction[0]}:\n")
+                type=variable_type.get(instruction[2])
+                code=code_parser(instruction[1:],type)
+                f.write(code)
+            else:
                 type=variable_type.get(instruction[1])
-                f.write(f"\tmovzx rdi, {type} [{instruction[1]}]\n")
+                code=code_parser(instruction,type)
+                f.write(code)
         f.write("\tmov rax, 60\n\tsyscall\n")
         
         

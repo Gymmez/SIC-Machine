@@ -1,4 +1,10 @@
 START 
 LDA BETA
+STA Gamma
+Loop LDA Gamma
+LDA Index
+STA BETA
 BETA BYTE 230
+Gamma WORD 44
+Index BYTE 69
 END
