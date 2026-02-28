@@ -16,7 +16,7 @@ def lexer(line, j):
     words = line.strip().split()
     
     if not words or words[0] == "." or words[0] in ["START", "END"]:
-        return # Skip empty lines, comments, and markers
+        return
 
 
     if len(words) == 2:
