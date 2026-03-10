@@ -2,20 +2,34 @@ START
     LDA NUM1
     ADD NUM2
     STA TEMP
-
     LDX INDEX_VAL
     STX COUNT
-
     LDA TEMP
     MUL FACTOR
     SUB NUM3
     ADD BONUS
     STA RESULT
-
     LDA RESULT
     DIV FACTOR
     STA FINAL
-
+    LDA FINAL
+    COMP LIMIT
+    JEQ equal_label
+    JGT greater_label
+    JLT less_label
+    J normal_exit
+equal_label LDA FINAL
+    ADD BONUS
+    STA FINAL
+    J normal_exit
+greater_label LDA FINAL
+    SUB NUM3
+    STA FINAL
+less_label LDA FINAL
+    ADD NUM3
+    STA FINAL
+normal_exit JSUB subroutine1
+    RSUB
 NUM1      WORD 20
 NUM2      WORD 10
 NUM3      WORD 5
@@ -26,4 +40,9 @@ COUNT     WORD 0
 TEMP      WORD 0
 RESULT    WORD 0
 FINAL     WORD 0
+LIMIT     WORD 30
+subroutine1 LDA FINAL
+    ADD BONUS
+    STA FINAL
+    RSUB
 END

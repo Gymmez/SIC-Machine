@@ -9,7 +9,7 @@ data_tokens=[]
 bss_tokens=[]
 data_direc=["BYTE","WORD"]
 bss_direc=["RESW","RESB"]
-sic_instructs=["ADD","LDX","AND","STX","COMP","STA","DIV","J","JEQ","JGT","JLT","JSUB","LDA","LDCH","LDL","MUL","OR","RD","RSUB","TIX","SUB","ADD","MUL","DIV"]
+sic_instructs=["ADD","LDX","AND","STX","COMP","STA","DIV","J","JEQ","JGT","JLT","JSUB","LDA","LDCH","LDL","OR","RD","RSUB","TIX","SUB","MUL","DIV"]
 #Lexing
 def lexer(line, j):
     line = line.replace(",", " ")
@@ -67,7 +67,7 @@ def parser():
         for instruction in code_tokens:
             if instruction[0] not in sic_instructs:
                 f.write(f"{instruction[0]}:\n")
-                var = instruction[2] if len(instruction) > 2 else None
+                var = instruction[2] if len(instruction) >= 2 else None
                 type = variable_type.get(var)
                 code = code_parser(instruction[1:], type)
             else:

@@ -33,4 +33,19 @@ def code_parser(instruction,type):
                 return f"\tmov rax, rdi\n\tmovzx r12, {type} [{instruction[1]}]\n\txor rdx, rdx\n\tidiv r12\n\tmov rdi, rax\n"
         if instruction[0] in ["AND","OR"]:
                 return f"\tmov rax,rdi\n\t movzx r12, {type} [{instruction[1]}] \n\t {instruction[0].lower()} rdi, r12\n"
-        
+        if instruction[0] =="COMP":
+                return f"\tmov rax,rdi\n\tmovzx r12, {type} [{instruction[1]}]\n\tcmp rax, r12\n\tmov rdi,rax\n"
+        if instruction[0]=="J":
+                return f"\tjmp {instruction[1]}\n"
+        if instruction[0]=="JEQ":
+                return f"\tje {instruction[1]}\n"
+        if instruction[0]=="JGT":
+                return f"\tjg {instruction[1]}\n"
+        if instruction[0]=="JLT":
+                return f"\tjl {instruction[1]}\n"
+        if instruction[0]=="JSUB":
+                return f"\tcall get_rip\nget_rip:\n\tpop rcx\n\tjmp {instruction[1]}\n"
+        if instruction[0]=="RSUB":
+                return f"\tjmp rcx\n"
+        if instruction[0]=="TIX":
+                return f"\tinc rbx\n\tcmp rbx {instruction[1]}\n"
