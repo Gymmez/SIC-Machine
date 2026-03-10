@@ -9,7 +9,7 @@ data_tokens=[]
 bss_tokens=[]
 data_direc=["BYTE","WORD"]
 bss_direc=["RESW","RESB"]
-classA_instructs=["ADD","AND","COMP","STA","DIV","J","JEQ","JGT","JLT","JSUB","LDA","LDCH","LDL","MUL","OR","RD","RSUB","TIX"]
+sic_instructs=["ADD","LDX","AND","STX","COMP","STA","DIV","J","JEQ","JGT","JLT","JSUB","LDA","LDCH","LDL","MUL","OR","RD","RSUB","TIX","SUB","ADD","MUL","DIV"]
 #Lexing
 def lexer(line, j):
     line = line.replace(",", " ")
@@ -20,7 +20,7 @@ def lexer(line, j):
 
 
     if len(words) == 2:
-        if words[0] in classA_instructs:
+        if words[0] in sic_instructs:
             code_tokens.append(words)
         else:
             print(f"Unknown instruction at line {j}: {words}")
@@ -29,7 +29,7 @@ def lexer(line, j):
 
     elif len(words) == 3:
         mnemonic = words[1]
-        if mnemonic in classA_instructs:
+        if mnemonic in sic_instructs:
             code_tokens.append(words)
         elif mnemonic in data_direc:
             data_tokens.append(words) 
@@ -52,8 +52,9 @@ def start_end_checker(line):
 def parser():
     global variable_type
     with open("main.s", "w") as f:
+        f.write("extern printf\n")
         f.write("section .data\n")
-
+        f.write("\tMSG db \"Final Accumulator: %d\", 10, 0 \n")
         for instruction in data_tokens:
             if instruction[1]=="WORD":
                 f.write(f"\t{instruction[0]} dw {instruction[2]}\n")
@@ -61,20 +62,23 @@ def parser():
             if instruction[1]=="BYTE":
                 f.write(f"\t{instruction[0]} db {instruction[2]}\n")
                 variable_type[f"{instruction[0]}"]="byte"
-        f.write("section .text\nglobal _start\n_start:\n")
+        f.write("section .text\nglobal main\nmain:\n")
 
         for instruction in code_tokens:
-            if instruction[0] not in classA_instructs:
+            if instruction[0] not in sic_instructs:
                 f.write(f"{instruction[0]}:\n")
-                type=variable_type.get(instruction[2])
-                code=code_parser(instruction[1:],type)
-                f.write(code)
+                var = instruction[2] if len(instruction) > 2 else None
+                type = variable_type.get(var)
+                code = code_parser(instruction[1:], type)
             else:
-                type=variable_type.get(instruction[1])
-                code=code_parser(instruction,type)
-                f.write(code)
-        f.write("\tmov rax, 60\n\tsyscall\n")
+                var = instruction[1] if len(instruction) > 1 else None
+                type = variable_type.get(var)
+                code = code_parser(instruction, type)
+
+            f.write(code or "")
         
+        f.write("\tmov rsi, rdi\n\tlea rdi, [rel MSG]\n\txor rax, rax\n\tcall printf\n")
+        f.write("\tmov rax, 60\n\txor rdi,rdi\n\tsyscall\n")
         
     
 def process_sic_file(file_path):

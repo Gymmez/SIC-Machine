@@ -1,7 +1,7 @@
 run:main
 	./main
 main: main.o
-	ld main.o -o main
+	gcc main.o -no-pie -o main
 main.o: main.s
 	nasm -f elf64 main.s -o main.o
 main.s: main.py main.sic
