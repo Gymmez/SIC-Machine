@@ -62,6 +62,14 @@ def parser():
             if instruction[1]=="BYTE":
                 f.write(f"\t{instruction[0]} db {instruction[2]}\n")
                 variable_type[f"{instruction[0]}"]="byte"
+        f.write("section .bss\n")
+        for instruction in bss_tokens:
+            if instruction[1]=="RESW":
+                f.write(f"\t{instruction[0]} resw {instruction[2]}\n")
+                variable_type[f"{instruction[0]}"]="word"
+            if instruction[1]=="RESB":
+                f.write(f"\t{instruction[0]} resb {instruction[2]}\n")
+                variable_type[f"{instruction[0]}"]="byte"
         f.write("section .text\nglobal main\nmain:\n")
 
         for instruction in code_tokens:
@@ -78,7 +86,7 @@ def parser():
             f.write(code or "")
         
         f.write("\tmov rsi, rdi\n\tlea rdi, [rel MSG]\n\txor rax, rax\n\tcall printf\n")
-        f.write("\tmov rax, 60\n\txor rdi,rdi\n\tsyscall\n")
+        f.write("\tEND:\n\tmov rax, 60\n\txor rdi,rdi\n\tsyscall\n")
         
     
 def process_sic_file(file_path):

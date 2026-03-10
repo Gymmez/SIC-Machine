@@ -48,4 +48,4 @@ def code_parser(instruction,type):
         if instruction[0]=="RSUB":
                 return f"\tjmp rcx\n"
         if instruction[0]=="TIX":
-                return f"\tinc rbx\n\tcmp rbx {instruction[1]}\n"
+                return f"\tinc rbx\n\tcmp rbx ,{instruction[1]}\n"
